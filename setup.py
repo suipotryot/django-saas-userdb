@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'django-saas-userdb',
-    packages = ['django-saas-userdb'],
+    packages = ['userdb'],
     version = __import__('userdb').__version__,
     author = 'Guillaume D',
     author_email = 'guillaume1.dubus@gmail.com',
