@@ -34,6 +34,12 @@ class Command(BaseCommand):
             help='The file with database settings and ###ADD_DATABASE flag'
         )
         parser.add_argument(
+            '--fileout',
+            default='',
+            dest = 'fileout',
+            help='The file to write new database settings in'
+        )
+        parser.add_argument(
             '--alias',
             default='',
             dest = 'alias',
@@ -82,4 +88,9 @@ class Command(BaseCommand):
         tpl = self.template.substitute(options)
         with open(options['file'], 'r') as f:
             filecontent = f.read()
-        return filecontent.replace(self.flag, tpl)
+        res = filecontent.replace(self.flag, tpl)
+        if options['fileout']:
+            with open(options['fileout'], 'w') as f:
+                f.write(res)
+        else:
+            return res
