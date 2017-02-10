@@ -22,7 +22,8 @@ will need a Database for each user, postfixed with "_db" (for example users name
 
 Note: For any user with no database configured for him, it will fallback to 'default' database.
 
-An example of database configuration in your settings (following previous example):
+The database file must be separated from settings file (to be easlily updated). If you want to use the command *add_database*, you also need to have the flag "###ADD_DATABASE" in this file (see example below).
+An example of database file (following previous example):
 ```
 DATABASES = {
     # The default database
@@ -45,5 +46,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'bar.sqlite3'),
     },
+    ###ADD_DATABASE
 }
 ```
