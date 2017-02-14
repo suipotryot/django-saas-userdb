@@ -9,6 +9,11 @@ try:
 except AttributeError:
     raise AttributeError('SAAS_DBNAME_FIELD is not defined in the settings file')
 
+try:
+    auth_apps = settings.SAAS_IGNORED_APPS
+except AttributeError:
+    raise AttributeError('SAAS_IGNORED_APPS is not defined in the settings file')
+
 
 class RouterMiddleware(object):
     """
@@ -39,11 +44,9 @@ class AuthRouter(object):
     """
     def db_for_read(self, model, **hints):
         """
-        Attempts to read auth models => auth_db.
-        The 'admin' test is to avoid an error in admin pages
+        Attempts to read to any i.
         """
-        if model._meta.app_label == 'auth' \
-                or model._meta.app_label == 'admin':
+        if model._meta.app_label in auth_apps:
             return 'auth_db'
         return None
 
@@ -51,7 +54,7 @@ class AuthRouter(object):
         """
         Attempts to write auth models => auth_db.
         """
-        if model._meta.app_label == 'auth':
+        if model._meta.app_label in auth_apps:
             return 'auth_db'
         return None
 
@@ -59,8 +62,8 @@ class AuthRouter(object):
         """
         Allow relations if a model in the auth app is involved.
         """
-        if obj1._meta.app_label == 'auth' or \
-                obj2._meta.app_label == 'auth':
+        if obj1._meta.app_label in auth_apps or \
+                obj2._meta.app_label in auth_apps:
             return True
         return None
 
@@ -68,7 +71,7 @@ class AuthRouter(object):
         """
         Make sure the auth app only appears in the 'auth_db' database.
         """
-        if app_label == 'auth':
+        if model._meta.app_label in auth_apps:
             return db == 'auth_db'
         return None
 
