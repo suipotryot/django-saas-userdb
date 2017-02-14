@@ -11,7 +11,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name = 'django-saas-userdb',
-    packages = ['userdb'],
+    packages = ['userdb', 'userdb.management.commands'],
     version = __import__('userdb').__version__,
     description = 'A lightweight application to use Django as SaaS (Software as a Service). It separates users databases for the same Django instance.',
     long_description = long_description,

@@ -1,2 +1,6 @@
-# Include the license file
 include LICENCE
+include README.md
+include userdb/management/commands/
+recursive-include userdb *
+recursive-include userdb/management/ *
+recursive-include userdb/management/commands/ *

@@ -10,15 +10,12 @@ except AttributeError:
     raise AttributeError('SAAS_DBNAME_FIELD is not defined in the settings file')
 
 
-class RouterMiddleware(object):
+def RouterMiddleware(get_response):
     """
-    This router set the database name to be used
+    This router sets the database name to be used
     """
 
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
+    def middleware(request):
 
         res = request.user
         try:
@@ -29,6 +26,8 @@ class RouterMiddleware(object):
         request_user.dbname = res
 
         return self.get_response(request)
+
+    return middleware
 
 
 
