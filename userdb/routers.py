@@ -71,7 +71,7 @@ class AuthRouter(object):
         """
         Make sure the auth app only appears in the 'auth_db' database.
         """
-        if model._meta.app_label in auth_apps:
+        if app_label in auth_apps:
             return db == 'auth_db'
         return None
 
