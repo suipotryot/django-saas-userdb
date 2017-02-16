@@ -20,21 +20,15 @@ class RouterMiddleware(object):
     This router set the database name to be used
     """
 
-    def __init__(self, get_response=None):
-        self.get_response = get_response
-
-    def __call__(self, request):
+    def process_request(self, request):
 
         res = request.user
         try:
             for attr in attrs:
                 res = getattr(res, attr)
         except AttributeError:
-            raise AttributeError("Attribute '%s' in '%s' was not found" % (attr, settings.SAAS_DBNAME_FIELD))
+            raise AttributeError("Attribute '%s' in 'User.%s' was not found" % (attr, settings.SAAS_DBNAME_FIELD))
         request_user.dbname = res
-
-        return self.get_response(request)
-
 
 
 class AuthRouter(object):
@@ -84,7 +78,7 @@ class DatabaseRouter(object):
 
     def _default_db(self):
         if hasattr(request_user, 'dbname') and request_user.dbname != "":
-            return request_user.dbname + "_db"
+            return request_user.dbname
         return 'default'
 
     def db_for_read(self, model, **hints):
