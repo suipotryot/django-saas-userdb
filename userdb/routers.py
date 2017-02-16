@@ -23,6 +23,9 @@ class RouterMiddleware(object):
     def process_request(self, request):
 
         res = request.user
+        if res.pk == None:
+            return
+
         try:
             for attr in attrs:
                 res = getattr(res, attr)
