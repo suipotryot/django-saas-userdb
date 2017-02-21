@@ -1,6 +1,7 @@
 from django.conf import settings
 
 import threading
+import logging
 
 request_user = threading.local()
 
@@ -23,7 +24,7 @@ class RouterMiddleware(object):
     def process_request(self, request):
 
         res = request.user
-        if res.pk == None:
+        if not res.is_authenticated():
             return
 
         try:
@@ -43,6 +44,7 @@ class AuthRouter(object):
         """
         Attempts to read to any i.
         """
+        logging.info("db_for_read is %s" % model._meta.app_label)
         if model._meta.app_label in auth_apps:
             return 'auth_db'
         return None
@@ -51,6 +53,7 @@ class AuthRouter(object):
         """
         Attempts to write auth models => auth_db.
         """
+        logging.info("db_for_write is %s" % model._meta.app_label)
         if model._meta.app_label in auth_apps:
             return 'auth_db'
         return None
@@ -59,6 +62,7 @@ class AuthRouter(object):
         """
         Allow relations if a model in the auth app is involved.
         """
+        logging.info("allow_relation for %s" % app_label)
         if obj1._meta.app_label in auth_apps or \
                 obj2._meta.app_label in auth_apps:
             return True
@@ -68,6 +72,7 @@ class AuthRouter(object):
         """
         Make sure the auth app only appears in the 'auth_db' database.
         """
+        logging.info("allow_migrate for %s" % app_label)
         if app_label in auth_apps:
             return db == 'auth_db'
         return None
@@ -81,7 +86,9 @@ class DatabaseRouter(object):
 
     def _default_db(self):
         if hasattr(request_user, 'dbname') and request_user.dbname != "":
+            logging.info("DB is %s" % request_user.dbname)
             return request_user.dbname
+        logging.info("DB is default")
         return 'default'
 
     def db_for_read(self, model, **hints):
